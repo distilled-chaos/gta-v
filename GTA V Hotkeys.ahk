@@ -25,7 +25,7 @@ WindowKey + Ctrl + F4
 Terminate after 1.5 secs
 
 WindowKey + ESC
-Beep (to verify that script is still running)
+Check to make sure that the script is awake
 )
 ;; end content
 
@@ -60,11 +60,11 @@ Countdown(Seconds := 1) {
 ;;;;;
 ;;; INIT
 ;;;;;
-
 ShowInfo()
+; TODO: add a first-run functionality to check for existence of pssuspend and to run it, ensuring the user agrees to TOS
 
 ;;;;;
-;;; BINDINGS
+;;; KEY BINDINGS
 ;;;;;
 
 ; Show info
@@ -76,9 +76,9 @@ return
 #^Space::
 if(!LagOutActive And ProcIsActive(Proc)) {
 	LagOutActive := true
-	Run pssuspend64.exe %Proc%
+	RunWait pssuspend64.exe %Proc%
 	Countdown(10)
-	Run pssuspend64.exe -r %Proc%
+	RunWait pssuspend64.exe -r %Proc%
 	SuccessBeep()
 }
 LagOutActive := false
@@ -96,13 +96,12 @@ return
 ; Test
 #Esc::
 Beep()
-VariableHere = The script is running
 
 TempFile = %A_Temp%\TempDat.bat
 FileAppend, 
 (
 @Echo Off
-Echo %VariableHere%
+Echo The script is running
 ), %TempFile%
 RunWait %TempFile%
 FileDelete %TempFile%
